@@ -27,7 +27,7 @@ exports.login=(req,res)=>{
     }
     res.json({message:"login successful"});
 };
-//getuser interfaced (just test, will delete)
-// exports.getUser=(req,res)=>{
-//     res.json({message:"User authenticated",user:req.user});
-// };
+// getuser interfaced (just test, will delete)
+exports.getUser=(req,res)=>{
+    res.json({message:"Users in memory",users});
+};

@@ -4,6 +4,6 @@ const userController=require("../controllers/users.controllers");
 
 router.post("/user/register",userController.register);
 router.post("/user/login",userController.login);
-router.get("/user/me");
+router.get("/user/me",userController.getUser);
 
 module.exports=router;
