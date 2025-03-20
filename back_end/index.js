@@ -1,11 +1,16 @@
 const express = require('express');
 const app = express();
 const port = 5000;
+const dotenv=require("dotenv");
+dotenv.config();
 
 // Cross domain processing
 const cors=require('cors');
 app.use(cors());
 
+//test
+console.log("Mongodb uri: ",process.env.MONGO_URI);
+console.log("JWT SECRET: ",process.env.JWT_SECRET);
 //Parse JSON request body
 app.use(express.json());
 const itemRoutes=require("./routes/items.routes");
