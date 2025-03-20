@@ -2,7 +2,7 @@ const bcrypt=require("bcrypt");
 const SECRET_KEY="123456";
 const jwt=require("jsonwebtoken");
 let users=[
-    {"email":"test1","password":"test1"}
+    // {"email":"test1","password":"test1"}
 ];
 //register interface
 exports.register=async(req,res)=>{

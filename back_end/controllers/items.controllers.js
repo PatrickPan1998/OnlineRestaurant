@@ -11,7 +11,7 @@ exports.getAllMenus=(req,res)=>{
     res.json(menus);
 };
 //interfact: findMenusById
-exports.getMenusById=(req,res)=>{
+exports.getMenusById=async(req,res)=>{
     console.log("Raw ID",req.params.id);
     const id = Number(req.params.id,10);
     if(!Number.isInteger(id)){
@@ -25,7 +25,7 @@ exports.getMenusById=(req,res)=>{
     
 };
 //interface: menus-add
-exports.addMenus=(req,res)=>{
+exports.addMenus=async(req,res)=>{
     const {name,price,description}=req.body;
     if(!name||!price){
         return res.status(400).json({message: 'name and price should not be null'});
@@ -40,7 +40,7 @@ exports.addMenus=(req,res)=>{
     res.status(201).json({message:'new dish successfully added',menu:newMenu});
 };
 //interface: menus-delete
-exports.deleteById=(req,res)=>{
+exports.deleteById=async(req,res)=>{
     const id =Number(req.params.id);
     const index=menus.findIndex(menu=>menu.id === id);
     if(!Number.isInteger(id)){
@@ -53,7 +53,7 @@ exports.deleteById=(req,res)=>{
     res.json({message:'dish successfully deleted'});
 };
 //interface: menus-update
-exports.updateById=(req,res)=>{
+exports.updateById=async(req,res)=>{
     const id = Number(req.params.id);
     const updateData=req.body;
     const index=menus.findIndex(menu=>menu.id === id);
@@ -67,6 +67,6 @@ exports.updateById=(req,res)=>{
     });
 };
 
-exports.get=(req, res) => {
+exports.get=async(req, res) => {
   res.send('Hello from backend!');
 };
