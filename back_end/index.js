@@ -10,7 +10,8 @@ app.use(cors());
 app.use(express.json());
 const itemRoutes=require("./routes/items.routes");
 app.use("/items",itemRoutes);
-
+const userRouter=require("./routes/users.routes");
+app.use("/",userRouter);
 
 app.listen(port, () => {
   console.log(`Backend server running at http://localhost:${port}`);
