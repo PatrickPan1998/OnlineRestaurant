@@ -7,7 +7,7 @@ router.get("/",itemController.get);
 router.get("/menus",itemController.getAllMenus);
 router.post("/addMenus",authenticate,itemController.addMenus);
 router.delete("/deleteById/:id",authenticate,itemController.deleteById);
-router.get("/getMenusById/:id",authenticate,itemController.getMenusById);
+router.get("/getMenusById/:id",itemController.getMenusById);
 router.put("/updateById/:id",authenticate,itemController.updateById);
 module.exports=router;
 
