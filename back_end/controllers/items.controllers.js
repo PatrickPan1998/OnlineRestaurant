@@ -61,30 +61,35 @@ test data:
 */
 //interface: menus-delete
 exports.deleteById=async(req,res)=>{
-    const id =Number(req.params.id);
-    const index=menus.findIndex(menu=>menu.id === id);
-    if(!Number.isInteger(id)){
-        return res.status(400).json({error:"Invalid ID format"});
+    try {
+        const deletedMenu=await Menu.findByIdAndDelete(req.params.id);
+        if(!deletedMenu){
+            return res.status(404).json({message:"Menu not found"});
+        }
+        res.json({message:"dish successfully deleted",menu:deletedMenu});
+    } catch (err) {
+        res.status(400).json({error:"Invalid ID format",details:err.message});
     }
-    if (index==-1){
-        return res.status(404).json({message:'not found'});
-    }
-    const deleteMenu=menus.splice(index,1)[0];
-    res.json({message:'dish successfully deleted'});
 };
 //interface: menus-update
 exports.updateById=async(req,res)=>{
-    const id = Number(req.params.id);
-    const updateData=req.body;
-    const index=menus.findIndex(menu=>menu.id === id);
-    if(index==-1){
-        return res.status(404).json({message:"menu not found"});
+    try {
+        const updatedMenu=await Menu.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            {new:true}
+        );
+        if(!updatedMenu){
+            return res.status(404).json({message:"Menu not found"});
+        }
+        res.json({
+            message:`Menu with ID ${req.params.id} has been updated`,
+            menu: updatedMenu
+        });
+    } catch (err) {
+        res.status(400).json({error:"Invalid ID format"});
     }
-    menus[index]={id, ...updateData};
-    res.json({
-        message:"Menu with ID ${id} has been updated",
-        menu:menus[index]
-    });
+
 };
 
 exports.get=async(req, res) => {
