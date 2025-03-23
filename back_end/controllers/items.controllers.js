@@ -7,6 +7,8 @@
 //     {id: 3,name: 'fish', price: 3}
 // ];
 const Menu=require("../models/Menu");
+const fs=require("fs");
+const path=require("path");
 //interface: menus-show
 exports.getAllMenus=async(req,res)=>{
     try{
@@ -31,17 +33,21 @@ exports.getMenusById=async(req,res)=>{
 };
 //interface: menus-add
 exports.addMenus=async(req,res)=>{
-    const {name,price,category,description,available}=req.body;
-    if(!name||!price){
-        return res.status(400).json({message: 'name and price should not be null'});
-    }
     try {
+        const {name,price,category,description,available}=req.body;
+        const image=req.file ? `/uploads/${req.file.filename}`:null;
+        console.log("hi",req.body)
+        if(!name||!price){
+            return res.status(400).json({message: 'name and price should not be null'});
+        }
+        
         const newMenu=new Menu({
             name,
             category,
             price,
             description: description || ``,
-            available
+            available,
+            image
         });
         await newMenu.save();
         res.status(201).json({message:'New dish successfully added',menu:newMenu});
@@ -60,37 +66,67 @@ test data:
 }
 */
 //interface: menus-delete
-exports.deleteById=async(req,res)=>{
+exports.deleteById = async (req, res) => {
     try {
-        const deletedMenu=await Menu.findByIdAndDelete(req.params.id);
-        if(!deletedMenu){
-            return res.status(404).json({message:"Menu not found"});
-        }
-        res.json({message:"dish successfully deleted",menu:deletedMenu});
-    } catch (err) {
-        res.status(400).json({error:"Invalid ID format",details:err.message});
-    }
-};
-//interface: menus-update
-exports.updateById=async(req,res)=>{
-    try {
-        const updatedMenu=await Menu.findByIdAndUpdate(
-            req.params.id,
-            req.body,
-            {new:true}
-        );
-        if(!updatedMenu){
-            return res.status(404).json({message:"Menu not found"});
-        }
-        res.json({
-            message:`Menu with ID ${req.params.id} has been updated`,
-            menu: updatedMenu
-        });
-    } catch (err) {
-        res.status(400).json({error:"Invalid ID format"});
-    }
+      const deletedMenu = await Menu.findByIdAndDelete(req.params.id);
+      if (!deletedMenu) {
+        return res.status(404).json({ message: "Menu not found" });
+      }
 
-};
+      if (deletedMenu.image) {
+        const imagePath = path.join(__dirname, "..", deletedMenu.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+  
+      res.json({ message: "Dish successfully deleted", menu: deletedMenu });
+    } catch (err) {
+      res.status(400).json({ error: "Invalid ID format", details: err.message });
+    }
+  };
+  
+//interface: menus-update
+
+exports.updateById = async (req, res) => {
+    try {
+      const { name, price, category, description, available } = req.body;
+      const image = req.file ? `/uploads/${req.file.filename}` : null;
+  
+      const oldMenu = await Menu.findById(req.params.id);
+      if (!oldMenu) {
+        return res.status(404).json({ message: "Menu not found" });
+      }
+  
+      if (image && oldMenu.image) {
+        const oldPath = path.join(__dirname, "..", oldMenu.image);
+        if (fs.existsSync(oldPath)) {
+          fs.unlinkSync(oldPath); // delete
+        }
+      }
+  
+      // update
+      const updatedMenu = await Menu.findByIdAndUpdate(
+        req.params.id,
+        {
+          name,
+          price,
+          category,
+          description,
+          available,
+          ...(image && { image }) 
+        },
+        { new: true }
+      );
+  
+      res.json({
+        message: `Menu with ID ${req.params.id} has been updated`,
+        menu: updatedMenu
+      });
+    } catch (err) {
+      res.status(400).json({ error: "Invalid ID format", details: err.message });
+    }
+  };
 
 exports.get=async(req, res) => {
   res.send('Hello from backend!');

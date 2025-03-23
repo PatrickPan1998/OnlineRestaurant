@@ -4,7 +4,8 @@ const MenuSchema=new mongoose.Schema({
     category:{type:String},
     price:{type:Number,required:true},
     description:{type:String},
-    available:{type:Boolean,default:true}
+    available:{type:Boolean,default:true},
+    image:{type:String}
 },{
     timestamps:true
 });
